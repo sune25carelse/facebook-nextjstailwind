@@ -8,8 +8,6 @@ export default function Home() {
         <title>facebook clone</title>
       </Head>
 
-      <h1>Lets build facebook clone</h1>
-
       <Header />
 
       {/* Body */}
