@@ -14,11 +14,11 @@ export default function Home({ session }) {
 
       <Header />
 
-      <div>
+      <main className="flex">
         <Sidebar />
         {/* Feed */}
         {/* Widgets */}
-      </div>
+      </main>
     </div>
   );
 }
