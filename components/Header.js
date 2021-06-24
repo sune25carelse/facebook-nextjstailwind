@@ -56,7 +56,7 @@ function Header() {
       <div className="flex items-center sm:space-x-2 justify-end">
         {/* Profile pic */}
         <Image
-          onclick={signOut}
+          onClick={signOut}
           className="rounded-full cursor-pointer"
           src={session.user.image}
           width="40"
