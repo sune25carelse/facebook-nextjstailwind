@@ -3,7 +3,7 @@ import { VideoCameraIcon, CameraIcon } from "@heroicons/react/solid";
 import { useSession } from "next-auth/client";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { db } from "../firebase";
+import { db, storage } from "../firebase";
 import firebase from "firebase";
 
 function InputBox() {
@@ -17,13 +17,33 @@ function InputBox() {
 
     if (!inputRef.current.value) return;
 
-    db.collection("posts").add({
-      message: inputRef.current.value,
-      name: session.user.name,
-      email: session.user.email,
-      image: session.user.image,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    db.collection("posts")
+      .add({
+        message: inputRef.current.value,
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.image,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then((doc) => {
+        if (imageToPost) {
+          // funky upload stuff for the image
+          const uploadTask = storage
+            .ref(`posts/${doc.id}`)
+            .putString(imageToPost, "data_url");
+
+          removeImage();
+
+          uploadTask.on(
+            "state_change",
+            null,
+            (error) => console.error(error),
+            () => {
+              // when the upload completes
+            }
+          );
+        }
+      });
 
     inputRef.current.value = "";
   };
@@ -73,7 +93,7 @@ function InputBox() {
           <div
             onClick={removeImage}
             className="flex flex-col filter hover:brightness-110 transition duration-150 
-            transform hover:scale-105 cursor:pointer"
+            transform hover:scale-105 cursor-pointer"
           >
             <img className="h-10 object-contain " src={imageToPost} alt="" />
             <p className="text-xs text-red-500 text-center">Remove</p>
