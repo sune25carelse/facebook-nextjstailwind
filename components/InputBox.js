@@ -40,6 +40,18 @@ function InputBox() {
             (error) => console.error(error),
             () => {
               // when the upload completes
+              storage
+                .ref("posts")
+                .child(doc.id)
+                .getDownloadURL()
+                .then((url) => {
+                  db.collection("posts").doc(doc.id).set(
+                    {
+                      postImage: url,
+                    },
+                    { merge: true }
+                  );
+                });
             }
           );
         }
